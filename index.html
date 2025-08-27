@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlassIn - AI Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .powered-by {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .capabilities {
+            color: white;
+        }
+
+        .capabilities h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .capability-list {
+            list-style: none;
+        }
+
+        .capability-list li {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .capability-list li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .capability-list i {
+            font-size: 1.2rem;
+        }
+
+        .chat-container {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-header {
+            color: white;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .chat-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 18px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-bottom-right-radius: 5px;
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .chat-input input:focus {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .examples {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .examples h2 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .example-list {
+            list-style: none;
+        }
+
+        .example-list li {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .example-list li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar, .examples {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">GlassIn</div>
+            <div class="tagline">Your Intelligent AI Assistant</div>
+            <div class="powered-by">Powered By Morein</div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="capabilities">
+                    <h2>Capabilities</h2>
+                    <ul class="capability-list">
+                        <li><i class="fas fa-comment"></i> Natural Conversations</li>
+                        <li><i class="fas fa-lightbulb"></i> Creative Ideas</li>
+                        <li><i class="fas fa-code"></i> Code Generation</li>
+                        <li><i class="fas fa-question-circle"></i> Problem Solving</li>
+                        <li><i class="fas fa-language"></i> Multi-language Support</li>
+                        <li><i class="fas fa-search"></i> Web Research</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Chat with GlassIn</h2>
+                </div>
+                <div class="chat-messages">
+                    <div class="message ai-message">
+                        Hello! I'm GlassIn, your AI assistant. How can I help you today?
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type your message here..." id="user-input">
+                    <button class="send-button" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="examples">
+                <h2>Try Asking</h2>
+                <ul class="example-list">
+                    <li>How can I improve my website's design?</li>
+                    <li>Write a poem about technology</li>
+                    <li>Explain quantum computing in simple terms</li>
+                    <li>How to make a responsive navigation bar?</li>
+                    <li>What are the best practices for UX design?</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>GlassIn AI Assistant &copy; 2023. All rights reserved. Powered by Morein.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-btn');
+            const chatMessages = document.querySelector('.chat-messages');
+            const exampleQuestions = document.querySelectorAll('.example-list li');
+            
+            // Predefined responses for demonstration
+            const responses = [
+                "I'd be happy to help with that!",
+                "Based on your question, I think the best approach would be...",
+                "That's an interesting question. Here's what I know about it...",
+                "I can assist you with that. Let me explain...",
+                "Great question! Here's some information that might help...",
+                "I've analyzed your request and here's my response...",
+                "Based on current knowledge, I can tell you that...",
+                "I'd recommend considering these factors...",
+                "From my understanding, the solution would be...",
+                "Here's a detailed explanation for you..."
+            ];
+            
+            // Function to add a message to the chat
+            function addMessage(text, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Function to generate AI response
+            function generateAIResponse(userMessage) {
+                // For demonstration, return a random predefined response
+                // In a real application, this would connect to an AI API
+                return responses[Math.floor(Math.random() * responses.length)] + 
+                       " You asked: '" + userMessage + "'";
+            }
+            
+            // Handle send button click
+            sendButton.addEventListener('click', function() {
+                const message = userInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    userInput.value = '';
+                    
+                    // Simulate AI thinking with a delay
+                    setTimeout(function() {
+                        const response = generateAIResponse(message);
+                        addMessage(response, false);
+                    }, 1000);
+                }
+            });
+            
+            // Handle enter key press
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendButton.click();
+                }
+            });
+            
+            // Add click events to example questions
+            exampleQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    userInput.value = this.textContent;
+                    userInput.focus();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
